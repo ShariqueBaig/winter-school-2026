@@ -1215,50 +1215,105 @@ function init3DTilt() {
 }
 
 // ================================
-// MOUSE TRAIL EFFECT
+// MOUSE TRAIL EFFECT - GLOWING COMET
 // ================================
 function initMouseTrail() {
-    const trail = [];
-    const trailLength = 12;
+    const canvas = document.createElement('canvas');
+    canvas.id = 'mouse-trail-canvas';
+    canvas.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 9999;
+    `;
+    document.body.appendChild(canvas);
 
-    for (let i = 0; i < trailLength; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'mouse-trail-dot';
-        dot.style.cssText = `
-            position: fixed;
-            width: ${12 - i}px;
-            height: ${12 - i}px;
-            background: rgba(0, 255, 136, ${0.5 - i * 0.04});
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.1s ease;
-            opacity: 0;
-        `;
-        document.body.appendChild(dot);
-        trail.push({ el: dot, x: 0, y: 0 });
-    }
-
+    const ctx = canvas.getContext('2d');
+    let particles = [];
     let mouseX = 0, mouseY = 0;
+    let isMoving = false;
+    let moveTimeout;
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        trail[0].el.style.opacity = '1';
+        isMoving = true;
+
+        // Create particles on movement
+        for (let i = 0; i < 3; i++) {
+            particles.push({
+                x: mouseX,
+                y: mouseY,
+                size: Math.random() * 8 + 4,
+                speedX: (Math.random() - 0.5) * 2,
+                speedY: (Math.random() - 0.5) * 2,
+                life: 1,
+                decay: Math.random() * 0.02 + 0.02,
+                hue: 140 + Math.random() * 20 // Green-ish
+            });
+        }
+
+        clearTimeout(moveTimeout);
+        moveTimeout = setTimeout(() => {
+            isMoving = false;
+        }, 100);
     });
 
     function animate() {
-        trail[0].x = mouseX;
-        trail[0].y = mouseY;
-        trail[0].el.style.left = trail[0].x + 'px';
-        trail[0].el.style.top = trail[0].y + 'px';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = 1; i < trail.length; i++) {
-            trail[i].x += (trail[i - 1].x - trail[i].x) * 0.3;
-            trail[i].y += (trail[i - 1].y - trail[i].y) * 0.3;
-            trail[i].el.style.left = trail[i].x + 'px';
-            trail[i].el.style.top = trail[i].y + 'px';
-            trail[i].el.style.opacity = trail[0].el.style.opacity;
+        // Draw glow at cursor position
+        if (isMoving) {
+            const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 30);
+            gradient.addColorStop(0, 'rgba(0, 255, 136, 0.4)');
+            gradient.addColorStop(0.5, 'rgba(0, 255, 136, 0.1)');
+            gradient.addColorStop(1, 'rgba(0, 255, 136, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(mouseX, mouseY, 30, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Update and draw particles
+        particles = particles.filter(p => p.life > 0);
+
+        particles.forEach(p => {
+            p.x += p.speedX;
+            p.y += p.speedY;
+            p.life -= p.decay;
+            p.size *= 0.98;
+
+            // Draw particle with glow
+            const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2);
+            gradient.addColorStop(0, `hsla(${p.hue}, 100%, 60%, ${p.life})`);
+            gradient.addColorStop(0.5, `hsla(${p.hue}, 100%, 50%, ${p.life * 0.5})`);
+            gradient.addColorStop(1, `hsla(${p.hue}, 100%, 40%, 0)`);
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Core particle
+            ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, ${p.life})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // Limit particles for performance
+        if (particles.length > 150) {
+            particles = particles.slice(-150);
         }
 
         requestAnimationFrame(animate);
