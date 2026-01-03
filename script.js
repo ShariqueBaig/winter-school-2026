@@ -564,7 +564,7 @@ function initWorldMap() {
 // DAILY LOG SYSTEM
 // ================================
 const LogManager = {
-    STORAGE_KEY: 'codegreen_daily_logs',
+    STORAGE_KEY: 'codegreen_daily_logs_v3',
 
     getLogs() {
         const logs = localStorage.getItem(this.STORAGE_KEY);
@@ -807,6 +807,64 @@ Advanced web security challenges completed:
 
 🛡️ DAY 2 VERDICT: Mission IDENTITY - COMPLETE. Agents now possess advanced reconnaissance and AI exploitation capabilities.`,
                     tags: 'day2, ctf, metadata, cookies, forensics, exif, web-security'
+                },
+                // ==================== DAY 3 LOGS ====================
+                {
+                    id: 1735862400001,
+                    timestamp: '2026-01-03T09:00:00.000Z',
+                    date: '2026-01-03',
+                    instructor: 'faisal',
+                    title: 'Day 3: Command & Coordination - Philosophy & Defense',
+                    content: `🛡️ COMMAND OPERATIONS:
+
+🎨 AGENT SHOWCASE:
+Agents presented their custom-built Division HQ websites. A deep discussion on the "Hacker Philosophy" followed—teaching agents that hacking is a vast, creative discipline. Core takeaway: A hacker is a problem solver.
+
+🔐 NATIONAL DEFENSE BRIEFING:
+Strategic session with Pakistan NCERT on protecting national infrastructure and the reality of modern cyber threats.
+
+🎭 TEAM IDENTITY:
+Teams selected a core cybersecurity concept to visually represent their division and began sketching their Team Identity Charts.`,
+                    tags: 'day3, ncert, philosophy, design, team-identity'
+                },
+                {
+                    id: 1735862400002,
+                    timestamp: '2026-01-03T11:00:00.000Z',
+                    date: '2026-01-03',
+                    instructor: 'sharique',
+                    title: 'Day 3: The Technical Arsenal - Web Exploitation',
+                    content: `TECHNICAL OPERATIONS LOG:
+
+🧪 PASSWORD VITALITY:
+Live demo using the Password Analyzer tool. Agents witnessed how fast weak passwords crumble under brute-force attacks.
+
+🛠️ BURP SUITE & JUICE SHOP:
+Deployed OWASP Juice Shop as a live sandbox. Agents learned to use Burp Suite as an intercepting proxy.
+
+💉 XSS & SQLi LABS:
+Agents executed Cross-Site Scripting and SQL Injection attacks, learning to "poison the stream" and bypass authentication using ' OR 1=1; --
+
+🚀 ACTIVE ASSIGNMENT:
+SQLi mastery, Advanced Juice Shop Labs, Log Analysis, and Chart Completion.`,
+                    tags: 'day3, password, burp-suite, juice-shop, xss, sqli'
+                },
+                {
+                    id: 1735862400003,
+                    timestamp: '2026-01-03T14:00:00.000Z',
+                    date: '2026-01-03',
+                    instructor: 'maira',
+                    title: 'Day 3: Social Engineering & Energy Protocols',
+                    content: `INTELLIGENCE & VITALITY LOG:
+
+🎣 PHISHING MASTERCLASS:
+Training on "Hook, Line, and Sinker" mechanics. Agents learned how the Shadow Syndicate uses social engineering to exploit human psychology.
+
+🔋 ENERGY REBOOT PROTOCOLS:
+• Tower Protocol: Sticky note structure building competition (Teamwork/Balance)
+• Adrenaline Burst: 30-second rapid-response jumping drill to reset agent focus
+
+🛡️ DAY 3 VERDICT: Mission SHIELD - COMPLETE. Agents are now fully operational.`,
+                    tags: 'day3, phishing, social-engineering, teamwork, energy'
                 }
             ];
 
