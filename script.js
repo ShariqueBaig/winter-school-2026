@@ -10,6 +10,169 @@ let soundEnabled = true;
 let terminalPaused = false;
 
 // ================================
+// INTERACTIVE CIRCUIT BOARD
+// ================================
+function initCircuitBoard() {
+    const canvas = document.getElementById('circuit-canvas');
+    if (!canvas) return;
+
+    const header = canvas.parentElement;
+    const ctx = canvas.getContext('2d');
+
+    let nodes = [];
+    let mouseX = -100, mouseY = -100;
+    const nodeCount = 40;
+    const connectionDistance = 80;
+    const mouseRadius = 150;
+
+    function resizeCanvas() {
+        canvas.width = header.offsetWidth;
+        canvas.height = header.offsetHeight;
+        initNodes();
+    }
+
+    function initNodes() {
+        nodes = [];
+        for (let i = 0; i < nodeCount; i++) {
+            nodes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                baseX: 0,
+                baseY: 0,
+                size: Math.random() * 3 + 1,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3
+            });
+            nodes[i].baseX = nodes[i].x;
+            nodes[i].baseY = nodes[i].y;
+        }
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Track mouse on header
+    header.addEventListener('mousemove', (e) => {
+        const rect = header.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+    });
+
+    header.addEventListener('mouseleave', () => {
+        mouseX = -100;
+        mouseY = -100;
+    });
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Update and draw nodes
+        nodes.forEach((node, i) => {
+            // Calculate distance to mouse
+            const dx = mouseX - node.x;
+            const dy = mouseY - node.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            // Move away from mouse when close
+            if (dist < mouseRadius) {
+                const force = (mouseRadius - dist) / mouseRadius;
+                node.x -= dx * force * 0.05;
+                node.y -= dy * force * 0.05;
+            } else {
+                // Slowly return to base position
+                node.x += (node.baseX - node.x) * 0.02;
+                node.y += (node.baseY - node.y) * 0.02;
+            }
+
+            // Add slight drift
+            node.baseX += node.vx;
+            node.baseY += node.vy;
+
+            // Bounce off edges
+            if (node.baseX < 0 || node.baseX > canvas.width) node.vx *= -1;
+            if (node.baseY < 0 || node.baseY > canvas.height) node.vy *= -1;
+
+            node.baseX = Math.max(0, Math.min(canvas.width, node.baseX));
+            node.baseY = Math.max(0, Math.min(canvas.height, node.baseY));
+
+            // Draw connections
+            nodes.slice(i + 1).forEach(other => {
+                const cdx = other.x - node.x;
+                const cdy = other.y - node.y;
+                const cdist = Math.sqrt(cdx * cdx + cdy * cdy);
+
+                if (cdist < connectionDistance) {
+                    const opacity = (1 - cdist / connectionDistance) * 0.5;
+                    const nodeMouseDist = Math.min(dist, Math.sqrt((mouseX - other.x) ** 2 + (mouseY - other.y) ** 2));
+                    const glow = nodeMouseDist < mouseRadius ? 0.8 : 0.3;
+
+                    ctx.beginPath();
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(other.x, other.y);
+                    ctx.strokeStyle = `rgba(0, 255, 136, ${opacity * glow})`;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            });
+
+            // Draw node
+            const nodeGlow = dist < mouseRadius ? 1 : 0.4;
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 255, 136, ${nodeGlow})`;
+            ctx.fill();
+
+            // Add glow effect when near mouse
+            if (dist < mouseRadius) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.size + 3, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 255, 136, ${(1 - dist / mouseRadius) * 0.3})`;
+                ctx.fill();
+            }
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+}
+
+// ================================
+// PARALLAX SCROLLING
+// ================================
+function initParallaxScrolling() {
+    const layer1 = document.querySelector('.layer-1');
+    const layer2 = document.querySelector('.layer-2');
+    const layer3 = document.querySelector('.layer-3');
+
+    if (!layer1 || !layer2 || !layer3) return;
+
+    function updateParallax() {
+        const scrollY = window.scrollY;
+
+        // Different speeds for each layer (slower = further away)
+        layer1.style.transform = `translateY(${scrollY * 0.1}px)`;
+        layer2.style.transform = `translateY(${scrollY * 0.25}px)`;
+        layer3.style.transform = `translateY(${scrollY * 0.4}px)`;
+    }
+
+    // Use requestAnimationFrame for smooth performance
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                updateParallax();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // Initial position
+    updateParallax();
+}
+
+// ================================
 // PARTICLE BACKGROUND
 // ================================
 function initParticleBackground() {
@@ -246,58 +409,155 @@ function initTerminalEffects() {
 }
 
 // ================================
-// WORLD MAP ATTACKS
+// WORLD MAP ATTACKS - ENHANCED
 // ================================
 function initWorldMap() {
     const attackLinesContainer = document.getElementById('attack-lines');
     const attackPointsContainer = document.getElementById('attack-points');
+    const mapSvg = document.querySelector('.map-svg');
 
-    const attackOrigins = [
-        { x: 180, y: 150, label: 'NYC' },
-        { x: 480, y: 130, label: 'London' },
-        { x: 750, y: 100, label: 'Moscow' },
-        { x: 830, y: 280, label: 'Sydney' },
-        { x: 280, y: 310, label: 'São Paulo' },
+    if (!mapSvg) return;
+
+    // Threat locations with Shadow Syndicate bases
+    const threatLocations = [
+        { x: 180, y: 150, label: 'NYC', type: 'threat' },
+        { x: 480, y: 130, label: 'London', type: 'threat' },
+        { x: 750, y: 100, label: 'Moscow', type: 'syndicate' },
+        { x: 830, y: 280, label: 'Sydney', type: 'threat' },
+        { x: 280, y: 310, label: 'São Paulo', type: 'threat' },
+        { x: 700, y: 140, label: 'Beijing', type: 'syndicate' },
+        { x: 550, y: 120, label: 'Berlin', type: 'threat' },
+        { x: 460, y: 240, label: 'Lagos', type: 'threat' },
+        { x: 150, y: 200, label: 'Mexico City', type: 'threat' },
+        { x: 770, y: 220, label: 'Jakarta', type: 'syndicate' },
     ];
 
     const hqPosition = { x: 620, y: 180 };
+    let attacksBlocked = 0;
+    let attacksDetected = 0;
+
+    // Create radar scanner effect
+    const radarGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    radarGroup.innerHTML = `
+        <circle cx="${hqPosition.x}" cy="${hqPosition.y}" r="100" fill="none" stroke="rgba(0,255,136,0.1)" stroke-width="1" class="radar-ring-1"/>
+        <circle cx="${hqPosition.x}" cy="${hqPosition.y}" r="150" fill="none" stroke="rgba(0,255,136,0.05)" stroke-width="1" class="radar-ring-2"/>
+        <circle cx="${hqPosition.x}" cy="${hqPosition.y}" r="200" fill="none" stroke="rgba(0,255,136,0.03)" stroke-width="1" class="radar-ring-3"/>
+        <line x1="${hqPosition.x}" y1="${hqPosition.y}" x2="${hqPosition.x + 150}" y2="${hqPosition.y}" stroke="rgba(0,255,136,0.4)" stroke-width="2" class="radar-sweep">
+            <animateTransform attributeName="transform" type="rotate" from="0 ${hqPosition.x} ${hqPosition.y}" to="360 ${hqPosition.x} ${hqPosition.y}" dur="4s" repeatCount="indefinite"/>
+        </line>
+    `;
+    mapSvg.insertBefore(radarGroup, attackLinesContainer);
+
+    // Note: City markers removed to prevent cursor glitches
+    // Attacks still animate from threat locations
 
     function createAttack() {
-        const origin = attackOrigins[Math.floor(Math.random() * attackOrigins.length)];
+        const origin = threatLocations[Math.floor(Math.random() * threatLocations.length)];
+        attacksDetected++;
 
-        // Create attack line
+        // Update threat counter
+        const threatCount = document.getElementById('threat-count');
+        if (threatCount) {
+            threatCount.textContent = Math.min(15, 5 + Math.floor(attacksDetected / 3));
+        }
+
+        // Create attack line with gradient
+        const lineId = 'attack-line-' + Date.now();
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        defs.innerHTML = `
+            <linearGradient id="${lineId}-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:${origin.type === 'syndicate' ? '#ff6b6b' : '#feca57'};stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#00ff88;stop-opacity:1" />
+            </linearGradient>
+        `;
+        mapSvg.appendChild(defs);
+
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', origin.x);
         line.setAttribute('y1', origin.y);
         line.setAttribute('x2', hqPosition.x);
         line.setAttribute('y2', hqPosition.y);
+        line.setAttribute('stroke', `url(#${lineId}-grad)`);
+        line.setAttribute('stroke-width', '2');
         line.setAttribute('class', 'attack-line');
+        line.setAttribute('stroke-dasharray', '5,5');
         attackLinesContainer.appendChild(line);
 
-        // Create attack point at origin
+        // Create attack point at origin with pulse
         const point = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         point.setAttribute('cx', origin.x);
         point.setAttribute('cy', origin.y);
-        point.setAttribute('r', '5');
-        point.setAttribute('class', 'attack-point');
+        point.setAttribute('r', '6');
+        point.setAttribute('fill', origin.type === 'syndicate' ? '#ff6b6b' : '#feca57');
+        point.setAttribute('class', 'attack-point-active');
         attackPointsContainer.appendChild(point);
 
-        // Remove after animation
+        // Create pulse effect at origin
+        const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pulse.setAttribute('cx', origin.x);
+        pulse.setAttribute('cy', origin.y);
+        pulse.setAttribute('r', '6');
+        pulse.setAttribute('fill', 'none');
+        pulse.setAttribute('stroke', origin.type === 'syndicate' ? '#ff6b6b' : '#feca57');
+        pulse.setAttribute('stroke-width', '2');
+        pulse.setAttribute('class', 'attack-pulse');
+        attackPointsContainer.appendChild(pulse);
+
+        // After 1.5 seconds, show defense shield at HQ
+        setTimeout(() => {
+            attacksBlocked++;
+
+            // Defense shield effect
+            const shield = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            shield.setAttribute('cx', hqPosition.x);
+            shield.setAttribute('cy', hqPosition.y);
+            shield.setAttribute('r', '20');
+            shield.setAttribute('fill', 'none');
+            shield.setAttribute('stroke', '#00ff88');
+            shield.setAttribute('stroke-width', '3');
+            shield.setAttribute('class', 'defense-shield');
+            attackPointsContainer.appendChild(shield);
+
+            // Show blocked text
+            const blockedText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            blockedText.setAttribute('x', hqPosition.x);
+            blockedText.setAttribute('y', hqPosition.y + 35);
+            blockedText.setAttribute('fill', '#00ff88');
+            blockedText.setAttribute('font-size', '10');
+            blockedText.setAttribute('text-anchor', 'middle');
+            blockedText.setAttribute('class', 'blocked-text');
+            blockedText.textContent = 'BLOCKED';
+            attackPointsContainer.appendChild(blockedText);
+
+            if (origin.type === 'syndicate') {
+                playSound('alert');
+            }
+
+            setTimeout(() => {
+                shield.remove();
+                blockedText.remove();
+            }, 1500);
+        }, 1500);
+
+        // Remove attack elements after animation
         setTimeout(() => {
             line.remove();
             point.remove();
-        }, 4000);
+            pulse.remove();
+            defs.remove();
+        }, 3000);
     }
 
-    // Random attacks
+    // Random attacks with varying frequency
     setInterval(() => {
-        if (Math.random() > 0.5) {
+        if (Math.random() > 0.4) {
             createAttack();
         }
-    }, 2000);
+    }, 3000);
 
-    // Initial attack
-    setTimeout(createAttack, 1000);
+    // Initial attacks
+    setTimeout(createAttack, 500);
+    setTimeout(createAttack, 1500);
 }
 
 // ================================
@@ -924,6 +1184,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initLiveClock();
     initTerminalEffects();
     initWorldMap();
+    initCircuitBoard();
+    initParallaxScrolling();
     SoundManager.init();
 
     // Load mission logs (hardcoded - managed by Command Center)
@@ -940,6 +1202,30 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.add('active');
             renderLogs(btn.dataset.filter);
             playSound('click');
+        });
+    });
+
+    // Tab Navigation
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.dataset.tab;
+
+            // Update buttons
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update panels
+            tabPanels.forEach(panel => {
+                panel.classList.remove('active');
+                if (panel.id === `tab-${targetTab}`) {
+                    panel.classList.add('active');
+                }
+            });
+
+            playSound('whoosh');
         });
     });
 
@@ -1227,7 +1513,7 @@ function initMouseTrail() {
         width: 100vw;
         height: 100vh;
         pointer-events: none;
-        z-index: 9999;
+        z-index: 9998;
     `;
     document.body.appendChild(canvas);
 
@@ -1249,19 +1535,17 @@ function initMouseTrail() {
         mouseY = e.clientY;
         isMoving = true;
 
-        // Create particles on movement
-        for (let i = 0; i < 3; i++) {
-            particles.push({
-                x: mouseX,
-                y: mouseY,
-                size: Math.random() * 8 + 4,
-                speedX: (Math.random() - 0.5) * 2,
-                speedY: (Math.random() - 0.5) * 2,
-                life: 1,
-                decay: Math.random() * 0.02 + 0.02,
-                hue: 140 + Math.random() * 20 // Green-ish
-            });
-        }
+        // Create fewer, smaller particles
+        particles.push({
+            x: mouseX,
+            y: mouseY,
+            size: Math.random() * 2 + 2,  // Smaller: 2-4px
+            speedX: (Math.random() - 0.5) * 1,
+            speedY: (Math.random() - 0.5) * 1,
+            life: 1,
+            decay: Math.random() * 0.04 + 0.04,  // Faster decay
+            hue: 140 + Math.random() * 20
+        });
 
         clearTimeout(moveTimeout);
         moveTimeout = setTimeout(() => {
@@ -1272,15 +1556,15 @@ function initMouseTrail() {
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw glow at cursor position
+        // Smaller glow at cursor position
         if (isMoving) {
-            const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 30);
-            gradient.addColorStop(0, 'rgba(0, 255, 136, 0.4)');
+            const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 15);
+            gradient.addColorStop(0, 'rgba(0, 255, 136, 0.3)');
             gradient.addColorStop(0.5, 'rgba(0, 255, 136, 0.1)');
             gradient.addColorStop(1, 'rgba(0, 255, 136, 0)');
             ctx.fillStyle = gradient;
             ctx.beginPath();
-            ctx.arc(mouseX, mouseY, 30, 0, Math.PI * 2);
+            ctx.arc(mouseX, mouseY, 15, 0, Math.PI * 2);
             ctx.fill();
         }
 

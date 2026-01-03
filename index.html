@@ -16,6 +16,12 @@
 </head>
 
 <body>
+    <!-- Parallax Background Layers -->
+    <div class="parallax-container">
+        <div class="parallax-layer layer-1"></div>
+        <div class="parallax-layer layer-2"></div>
+        <div class="parallax-layer layer-3"></div>
+    </div>
     <!-- Particle Background -->
     <canvas id="particle-canvas"></canvas>
     <!-- Matrix Rain Background -->
@@ -57,6 +63,7 @@
 
         <!-- Header -->
         <header class="header">
+            <canvas id="circuit-canvas"></canvas>
             <div class="header-left">
                 <div class="network-status">
                     <div class="network-dot"></div>
@@ -91,287 +98,513 @@
             </div>
         </header>
 
-        <!-- Stats Bar -->
-        <section class="stats-bar">
-            <div class="stat-card">
-                <div class="stat-icon">🛡️</div>
-                <div class="stat-info">
-                    <span class="stat-number" id="total-missions">0</span>
-                    <span class="stat-label">MISSIONS LOGGED</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">👥</div>
-                <div class="stat-info">
-                    <span class="stat-number">3</span>
-                    <span class="stat-label">ACTIVE COMMANDERS</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🎯</div>
-                <div class="stat-info">
-                    <span class="stat-number" id="days-active">1</span>
-                    <span class="stat-label">DAYS ACTIVE</span>
-                </div>
-            </div>
-            <div class="stat-card danger">
-                <div class="stat-icon">⚡</div>
-                <div class="stat-info">
-                    <span class="stat-number" id="threat-count">7</span>
-                    <span class="stat-label">THREATS DETECTED</span>
-                </div>
-            </div>
-        </section>
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="dashboard">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-text">DASHBOARD</span>
+            </button>
+            <button class="tab-btn" data-tab="command">
+                <span class="tab-icon">👥</span>
+                <span class="tab-text">COMMAND</span>
+            </button>
+            <button class="tab-btn" data-tab="agents">
+                <span class="tab-icon">🎖️</span>
+                <span class="tab-text">AGENTS</span>
+            </button>
+            <button class="tab-btn" data-tab="logs">
+                <span class="tab-icon">📋</span>
+                <span class="tab-text">LOGS</span>
+            </button>
+        </nav>
 
-        <!-- Live Terminal -->
-        <section class="terminal-section">
-            <div class="terminal">
-                <div class="terminal-header">
-                    <div class="terminal-dots">
-                        <span class="terminal-dot red"></span>
-                        <span class="terminal-dot yellow"></span>
-                        <span class="terminal-dot green"></span>
-                    </div>
-                    <span class="terminal-title">LIVE_MISSION_LOG.exe</span>
-                    <div class="terminal-controls">
-                        <button class="terminal-btn" id="clear-terminal" title="Clear Terminal">CLR</button>
-                        <button class="terminal-btn" id="pause-terminal" title="Pause/Resume">❚❚</button>
-                    </div>
-                </div>
-                <div class="terminal-body" id="terminal-output">
-                    <p><span class="terminal-time">[--:--:--]</span> > System initialized...</p>
-                    <p><span class="terminal-time">[--:--:--]</span> > Connecting to CODE GRی یN network...</p>
-                    <p><span class="terminal-time">[--:--:--]</span> > Instructor authentication: <span
-                            class="success">VERIFIED</span></p>
-                    <p><span class="terminal-time">[--:--:--]</span> > Loading command modules...</p>
-                    <p><span class="terminal-time">[--:--:--]</span> > Shadow Syndicate activity: <span
-                            class="warning">DETECTED</span></p>
-                    <p><span class="terminal-time">[--:--:--]</span> > All systems operational. Awaiting commands...</p>
-                    <p class="cursor">█</p>
-                </div>
-            </div>
-        </section>
+        <!-- TAB: Dashboard -->
+        <div class="tab-panel active" id="tab-dashboard">
 
-        <!-- World Map Section -->
-        <section class="map-section">
-            <h2 class="section-title">
-                <span class="title-icon">🌍</span>
-                GLOBAL THREAT MONITOR
-                <span class="live-badge">LIVE</span>
-            </h2>
-            <div class="world-map-container">
-                <div class="world-map">
-                    <svg viewBox="0 0 1000 500" class="map-svg">
-                        <!-- Simplified World Map Outline -->
-                        <g class="continents" fill="rgba(0, 255, 136, 0.1)" stroke="rgba(0, 255, 136, 0.3)"
-                            stroke-width="0.5">
-                            <!-- North America -->
-                            <path
-                                d="M150,120 L250,100 L280,130 L300,120 L280,180 L250,200 L200,220 L150,200 L120,160 Z" />
-                            <!-- South America -->
-                            <path d="M220,250 L280,240 L300,280 L290,350 L260,400 L230,380 L210,320 Z" />
-                            <!-- Europe -->
-                            <path d="M450,100 L520,90 L550,120 L530,160 L480,150 L450,130 Z" />
-                            <!-- Africa -->
-                            <path d="M450,180 L520,170 L550,220 L530,300 L480,320 L440,280 L430,220 Z" />
-                            <!-- Asia -->
-                            <path d="M550,80 L750,70 L820,120 L800,200 L700,220 L600,180 L550,140 Z" />
-                            <!-- Australia -->
-                            <path d="M780,300 L850,280 L880,320 L860,370 L800,380 L770,340 Z" />
-                        </g>
-                        <!-- Attack Lines -->
-                        <g class="attack-lines" id="attack-lines">
-                            <!-- Dynamic attack lines will be added here -->
-                        </g>
-                        <!-- Attack Points -->
-                        <g class="attack-points" id="attack-points">
-                            <!-- HQ Point - Pakistan -->
-                            <circle cx="620" cy="180" r="8" class="hq-point" />
-                            <circle cx="620" cy="180" r="15" class="hq-pulse" />
-                            <text x="620" y="205" class="map-label hq-label">HQ</text>
-                        </g>
-                    </svg>
-                    <!-- Attack Legend -->
-                    <div class="map-legend">
-                        <div class="legend-item">
-                            <span class="legend-dot hq"></span>
-                            <span>CODE GRی یN HQ</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-dot threat"></span>
-                            <span>Shadow Syndicate</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-dot active"></span>
-                            <span>Active Attack</span>
-                        </div>
+            <!-- Stats Bar -->
+            <section class="stats-bar">
+                <div class="stat-card">
+                    <div class="stat-icon">🛡️</div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="total-missions">0</span>
+                        <span class="stat-label">MISSIONS LOGGED</span>
                     </div>
                 </div>
-            </div>
-        </section>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">ACTIVE COMMANDERS</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="days-active">1</span>
+                        <span class="stat-label">DAYS ACTIVE</span>
+                    </div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="threat-count">7</span>
+                        <span class="stat-label">THREATS DETECTED</span>
+                    </div>
+                </div>
+            </section>
 
-        <!-- Instructor Cards -->
-        <section class="instructors-section">
-            <h2 class="section-title">
-                <span class="title-icon">👥</span>
-                INSTRUCTOR COMMAND TEAM
-            </h2>
-            <div class="instructors-grid">
-                <!-- Faisal -->
-                <div class="instructor-card" data-instructor="faisal" onclick="openInstructorModal('faisal')">
-                    <div class="card-glow"></div>
-                    <div class="card-scan-line"></div>
-                    <div class="avatar-container">
-                        <div class="avatar-ring">
-                            <svg class="ring-svg" viewBox="0 0 100 100">
-                                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0,255,136,0.2)"
-                                    stroke-width="2" />
-                                <circle cx="50" cy="50" r="45" fill="none" stroke="#00ff88" stroke-width="2"
-                                    stroke-dasharray="70 200" class="ring-progress" />
-                            </svg>
+            <!-- Terminal & Leaderboard Grid -->
+            <section class="terminal-grid">
+                <!-- Live Terminal -->
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
                         </div>
-                        <div class="avatar">
-                            <img src="avatars/Faisal_avatar.png" alt="Commander Faisal" class="avatar-img">
-                        </div>
-                        <div class="status-indicator online"></div>
-                    </div>
-                    <div class="instructor-info">
-                        <h3 class="instructor-name">FAISAL</h3>
-                        <p class="instructor-role">Commander</p>
-                        <p class="instructor-division">ALPHA DIVISION</p>
-                    </div>
-                    <div class="instructor-stats">
-                        <div class="stat">
-                            <span class="stat-value" id="faisal-logs">0</span>
-                            <span class="stat-label">Logs</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">LVL 5</span>
-                            <span class="stat-label">Rank</span>
+                        <span class="terminal-title">LIVE_MISSION_LOG.exe</span>
+                        <div class="terminal-controls">
+                            <button class="terminal-btn" id="clear-terminal" title="Clear Terminal">CLR</button>
+                            <button class="terminal-btn" id="pause-terminal" title="Pause/Resume">❚❚</button>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <span class="view-profile">VIEW PROFILE →</span>
+                    <div class="terminal-body" id="terminal-output">
+                        <p><span class="terminal-time">[--:--:--]</span> > System initialized...</p>
+                        <p><span class="terminal-time">[--:--:--]</span> > Connecting to CODE GRی یN network...</p>
+                        <p><span class="terminal-time">[--:--:--]</span> > Instructor authentication: <span
+                                class="success">VERIFIED</span></p>
+                        <p><span class="terminal-time">[--:--:--]</span> > Loading command modules...</p>
+                        <p><span class="terminal-time">[--:--:--]</span> > Shadow Syndicate activity: <span
+                                class="warning">DETECTED</span></p>
+                        <p><span class="terminal-time">[--:--:--]</span> > All systems operational. Awaiting commands...
+                        </p>
+                        <p class="cursor">█</p>
                     </div>
                 </div>
 
-                <!-- Sharique -->
-                <div class="instructor-card" data-instructor="sharique" onclick="openInstructorModal('sharique')">
-                    <div class="card-glow sharique"></div>
-                    <div class="card-scan-line"></div>
-                    <div class="avatar-container">
-                        <div class="avatar-ring sharique">
-                            <svg class="ring-svg" viewBox="0 0 100 100">
-                                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(108,92,231,0.2)"
-                                    stroke-width="2" />
-                                <circle cx="50" cy="50" r="45" fill="none" stroke="#6c5ce7" stroke-width="2"
-                                    stroke-dasharray="85 200" class="ring-progress" />
-                            </svg>
-                        </div>
-                        <div class="avatar">
-                            <img src="avatars/Sharique_Avatar.png" alt="Tech Lead Sharique" class="avatar-img">
-                        </div>
-                        <div class="status-indicator online"></div>
+                <!-- Agent Leaderboard -->
+                <div class="leaderboard-panel">
+                    <div class="leaderboard-header">
+                        <span class="leaderboard-icon">🏆</span>
+                        <span class="leaderboard-title">AGENT LEADERBOARD</span>
                     </div>
-                    <div class="instructor-info">
-                        <h3 class="instructor-name">SHARIQUE</h3>
-                        <p class="instructor-role">Tech Lead</p>
-                        <p class="instructor-division">BETA DIVISION</p>
-                    </div>
-                    <div class="instructor-stats">
-                        <div class="stat">
-                            <span class="stat-value" id="sharique-logs">0</span>
-                            <span class="stat-label">Logs</span>
+                    <div class="leaderboard-body">
+                        <div class="agent-row rank-1">
+                            <span class="agent-rank">🥇</span>
+                            <span class="agent-name">Agent Alpha</span>
+                            <span class="agent-xp">1250 XP</span>
                         </div>
-                        <div class="stat">
-                            <span class="stat-value">LVL 5</span>
-                            <span class="stat-label">Rank</span>
+                        <div class="agent-row rank-2">
+                            <span class="agent-rank">🥈</span>
+                            <span class="agent-name">Agent Bravo</span>
+                            <span class="agent-xp">1180 XP</span>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <span class="view-profile">VIEW PROFILE →</span>
+                        <div class="agent-row rank-3">
+                            <span class="agent-rank">🥉</span>
+                            <span class="agent-name">Agent Charlie</span>
+                            <span class="agent-xp">1050 XP</span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-rank">4</span>
+                            <span class="agent-name">Agent Delta</span>
+                            <span class="agent-xp">980 XP</span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-rank">5</span>
+                            <span class="agent-name">Agent Echo</span>
+                            <span class="agent-xp">920 XP</span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-rank">6</span>
+                            <span class="agent-name">Agent Foxtrot</span>
+                            <span class="agent-xp">850 XP</span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-rank">7</span>
+                            <span class="agent-name">Agent Golf</span>
+                            <span class="agent-xp">780 XP</span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-rank">8</span>
+                            <span class="agent-name">Agent Hotel</span>
+                            <span class="agent-xp">720 XP</span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-rank">9</span>
+                            <span class="agent-name">Agent India</span>
+                            <span class="agent-xp">650 XP</span>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <!-- Maira -->
-                <div class="instructor-card" data-instructor="maira" onclick="openInstructorModal('maira')">
-                    <div class="card-glow maira"></div>
-                    <div class="card-scan-line"></div>
-                    <div class="avatar-container">
-                        <div class="avatar-ring maira">
-                            <svg class="ring-svg" viewBox="0 0 100 100">
-                                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(253,121,168,0.2)"
-                                    stroke-width="2" />
-                                <circle cx="50" cy="50" r="45" fill="none" stroke="#fd79a8" stroke-width="2"
-                                    stroke-dasharray="75 200" class="ring-progress" />
-                            </svg>
+            <!-- World Map Section -->
+            <section class="map-section">
+                <h2 class="section-title">
+                    <span class="title-icon">🌍</span>
+                    GLOBAL THREAT MONITOR
+                    <span class="live-badge">LIVE</span>
+                </h2>
+                <div class="world-map-container">
+                    <div class="world-map">
+                        <svg viewBox="0 0 1000 500" class="map-svg">
+                            <!-- Simplified World Map Outline -->
+                            <g class="continents" fill="rgba(0, 255, 136, 0.1)" stroke="rgba(0, 255, 136, 0.3)"
+                                stroke-width="0.5">
+                                <!-- North America -->
+                                <path
+                                    d="M150,120 L250,100 L280,130 L300,120 L280,180 L250,200 L200,220 L150,200 L120,160 Z" />
+                                <!-- South America -->
+                                <path d="M220,250 L280,240 L300,280 L290,350 L260,400 L230,380 L210,320 Z" />
+                                <!-- Europe -->
+                                <path d="M450,100 L520,90 L550,120 L530,160 L480,150 L450,130 Z" />
+                                <!-- Africa -->
+                                <path d="M450,180 L520,170 L550,220 L530,300 L480,320 L440,280 L430,220 Z" />
+                                <!-- Asia -->
+                                <path d="M550,80 L750,70 L820,120 L800,200 L700,220 L600,180 L550,140 Z" />
+                                <!-- Australia -->
+                                <path d="M780,300 L850,280 L880,320 L860,370 L800,380 L770,340 Z" />
+                            </g>
+                            <!-- Attack Lines -->
+                            <g class="attack-lines" id="attack-lines">
+                                <!-- Dynamic attack lines will be added here -->
+                            </g>
+                            <!-- Attack Points -->
+                            <g class="attack-points" id="attack-points">
+                                <!-- HQ Point - Pakistan -->
+                                <circle cx="620" cy="180" r="8" class="hq-point" />
+                                <circle cx="620" cy="180" r="15" class="hq-pulse" />
+                                <text x="620" y="205" class="map-label hq-label">HQ</text>
+                            </g>
+                        </svg>
+                        <!-- Attack Legend -->
+                        <div class="map-legend">
+                            <div class="legend-item">
+                                <span class="legend-dot hq"></span>
+                                <span>CODE GRی یN HQ</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot threat"></span>
+                                <span>Shadow Syndicate</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot active"></span>
+                                <span>Active Attack</span>
+                            </div>
                         </div>
-                        <div class="avatar">
-                            <img src="avatars/Maira_avatar.png" alt="Operations Maira" class="avatar-img">
-                        </div>
-                        <div class="status-indicator online"></div>
-                    </div>
-                    <div class="instructor-info">
-                        <h3 class="instructor-name">MAIRA</h3>
-                        <p class="instructor-role">Operations</p>
-                        <p class="instructor-division">GAMMA DIVISION</p>
-                    </div>
-                    <div class="instructor-stats">
-                        <div class="stat">
-                            <span class="stat-value" id="maira-logs">0</span>
-                            <span class="stat-label">Logs</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">LVL 5</span>
-                            <span class="stat-label">Rank</span>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <span class="view-profile">VIEW PROFILE →</span>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
-        <!-- Daily Log Section -->
-        <section class="daily-log-section">
-            <h2 class="section-title">
-                <span class="title-icon">📋</span>
-                DAILY MISSION LOG
-            </h2>
-
-            <!-- Mission Log Status -->
-            <div class="log-status-bar">
-                <span class="status-icon">🔒</span>
-                <span class="status-text">Mission logs managed by Command Center • Secure Channel Active</span>
-            </div>
-
-            <!-- Log Entries Display -->
-            <div class="log-entries-container">
-                <div class="entries-header">
-                    <div class="log-filter">
-                        <button class="filter-btn active" data-filter="all">
-                            <span class="filter-icon">📊</span> All
-                        </button>
-                        <button class="filter-btn" data-filter="faisal">
-                            <span class="filter-icon">🟢</span> Faisal
-                        </button>
-                        <button class="filter-btn" data-filter="sharique">
-                            <span class="filter-icon">🟣</span> Sharique
-                        </button>
-                        <button class="filter-btn" data-filter="maira">
-                            <span class="filter-icon">🩷</span> Maira
-                        </button>
+        <!-- TAB: Command -->
+        <div class="tab-panel" id="tab-command">
+            <!-- Instructor Cards -->
+            <section class="instructors-section">
+                <h2 class="section-title">
+                    <span class="title-icon">👥</span>
+                    INSTRUCTOR COMMAND TEAM
+                </h2>
+                <div class="instructors-grid">
+                    <!-- Faisal -->
+                    <div class="instructor-card" data-instructor="faisal" onclick="openInstructorModal('faisal')">
+                        <div class="card-glow"></div>
+                        <div class="card-scan-line"></div>
+                        <div class="avatar-container">
+                            <div class="avatar-ring">
+                                <svg class="ring-svg" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0,255,136,0.2)"
+                                        stroke-width="2" />
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#00ff88" stroke-width="2"
+                                        stroke-dasharray="70 200" class="ring-progress" />
+                                </svg>
+                            </div>
+                            <div class="avatar">
+                                <img src="avatars/Faisal_avatar.png" alt="Commander Faisal" class="avatar-img">
+                            </div>
+                            <div class="status-indicator online"></div>
+                        </div>
+                        <div class="instructor-info">
+                            <h3 class="instructor-name">FAISAL</h3>
+                            <p class="instructor-role">Commander</p>
+                            <p class="instructor-division">ALPHA DIVISION</p>
+                        </div>
+                        <div class="instructor-stats">
+                            <div class="stat">
+                                <span class="stat-value" id="faisal-logs">0</span>
+                                <span class="stat-label">Logs</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">LVL 5</span>
+                                <span class="stat-label">Rank</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="view-profile">VIEW PROFILE →</span>
+                        </div>
                     </div>
-                    <div class="entries-count">
-                        <span id="visible-count">0</span> entries
+
+                    <!-- Sharique -->
+                    <div class="instructor-card" data-instructor="sharique" onclick="openInstructorModal('sharique')">
+                        <div class="card-glow sharique"></div>
+                        <div class="card-scan-line"></div>
+                        <div class="avatar-container">
+                            <div class="avatar-ring sharique">
+                                <svg class="ring-svg" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(108,92,231,0.2)"
+                                        stroke-width="2" />
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#6c5ce7" stroke-width="2"
+                                        stroke-dasharray="85 200" class="ring-progress" />
+                                </svg>
+                            </div>
+                            <div class="avatar">
+                                <img src="avatars/Sharique_Avatar.png" alt="Tech Lead Sharique" class="avatar-img">
+                            </div>
+                            <div class="status-indicator online"></div>
+                        </div>
+                        <div class="instructor-info">
+                            <h3 class="instructor-name">SHARIQUE</h3>
+                            <p class="instructor-role">Tech Lead</p>
+                            <p class="instructor-division">BETA DIVISION</p>
+                        </div>
+                        <div class="instructor-stats">
+                            <div class="stat">
+                                <span class="stat-value" id="sharique-logs">0</span>
+                                <span class="stat-label">Logs</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">LVL 5</span>
+                                <span class="stat-label">Rank</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="view-profile">VIEW PROFILE →</span>
+                        </div>
+                    </div>
+
+                    <!-- Maira -->
+                    <div class="instructor-card" data-instructor="maira" onclick="openInstructorModal('maira')">
+                        <div class="card-glow maira"></div>
+                        <div class="card-scan-line"></div>
+                        <div class="avatar-container">
+                            <div class="avatar-ring maira">
+                                <svg class="ring-svg" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(253,121,168,0.2)"
+                                        stroke-width="2" />
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="#fd79a8" stroke-width="2"
+                                        stroke-dasharray="75 200" class="ring-progress" />
+                                </svg>
+                            </div>
+                            <div class="avatar">
+                                <img src="avatars/Maira_avatar.png" alt="Operations Maira" class="avatar-img">
+                            </div>
+                            <div class="status-indicator online"></div>
+                        </div>
+                        <div class="instructor-info">
+                            <h3 class="instructor-name">MAIRA</h3>
+                            <p class="instructor-role">Operations</p>
+                            <p class="instructor-division">GAMMA DIVISION</p>
+                        </div>
+                        <div class="instructor-stats">
+                            <div class="stat">
+                                <span class="stat-value" id="maira-logs">0</span>
+                                <span class="stat-label">Logs</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">LVL 5</span>
+                                <span class="stat-label">Rank</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="view-profile">VIEW PROFILE →</span>
+                        </div>
                     </div>
                 </div>
-                <div id="log-entries" class="log-entries">
-                    <!-- Logs will be dynamically inserted here -->
+            </section>
+        </div>
+
+        <!-- TAB: Agents -->
+        <div class="tab-panel" id="tab-agents">
+            <!-- Agent Roster Section -->
+            <section class="agents-section">
+                <h2 class="section-title">
+                    <span class="title-icon">🎖️</span>
+                    AGENT ROSTER
+                    <span class="agent-count-badge">9 ACTIVE</span>
+                </h2>
+                <div class="agents-grid">
+                    <!-- Agent 1 -->
+                    <div class="agent-card" data-division="aqua">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge aqua">AQUA</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">🦈</div>
+                        <h3 class="agent-codename">SHARK</h3>
+                        <p class="agent-tagline">"Silent but deadly"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">1250 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent 2 -->
+                    <div class="agent-card" data-division="volt">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge volt">VOLT</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">⚡</div>
+                        <h3 class="agent-codename">THUNDER</h3>
+                        <p class="agent-tagline">"Speed is power"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">1180 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent 3 -->
+                    <div class="agent-card" data-division="terra">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge terra">TERRA</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">🌿</div>
+                        <h3 class="agent-codename">ROOT</h3>
+                        <p class="agent-tagline">"Grounded in truth"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">1050 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent 4 -->
+                    <div class="agent-card" data-division="atmos">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge atmos">ATMOS</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">🌪️</div>
+                        <h3 class="agent-codename">CYCLONE</h3>
+                        <p class="agent-tagline">"Chaos in motion"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">980 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent 5 -->
+                    <div class="agent-card" data-division="aqua">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge aqua">AQUA</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">🐙</div>
+                        <h3 class="agent-codename">KRAKEN</h3>
+                        <p class="agent-tagline">"Depths of knowledge"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">920 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent 6 -->
+                    <div class="agent-card" data-division="volt">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge volt">VOLT</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">💥</div>
+                        <h3 class="agent-codename">SPARK</h3>
+                        <p class="agent-tagline">"Igniting innovation"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">850 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent 7 -->
+                    <div class="agent-card" data-division="terra">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge terra">TERRA</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">🏔️</div>
+                        <h3 class="agent-codename">SUMMIT</h3>
+                        <p class="agent-tagline">"Reaching new heights"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">780 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent 8 -->
+                    <div class="agent-card" data-division="atmos">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge atmos">ATMOS</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">🌙</div>
+                        <h3 class="agent-codename">ECLIPSE</h3>
+                        <p class="agent-tagline">"Shadow operations"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">720 XP</span>
+                        </div>
+                    </div>
+
+                    <!-- Agent 9 -->
+                    <div class="agent-card" data-division="aqua">
+                        <div class="agent-card-header">
+                            <span class="agent-division-badge aqua">AQUA</span>
+                            <span class="agent-status online">● ONLINE</span>
+                        </div>
+                        <div class="agent-avatar">🌊</div>
+                        <h3 class="agent-codename">WAVE</h3>
+                        <p class="agent-tagline">"Riding the signal"</p>
+                        <div class="agent-meta">
+                            <span class="agent-xp-display">650 XP</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
+
+        <!-- TAB: Logs -->
+        <div class="tab-panel" id="tab-logs">
+            <!-- Daily Log Section -->
+            <section class="daily-log-section">
+                <h2 class="section-title">
+                    <span class="title-icon">📋</span>
+                    DAILY MISSION LOG
+                </h2>
+
+                <!-- Mission Log Status -->
+                <div class="log-status-bar">
+                    <span class="status-icon">🔒</span>
+                    <span class="status-text">Mission logs managed by Command Center • Secure Channel Active</span>
+                </div>
+
+                <!-- Log Entries Display -->
+                <div class="log-entries-container">
+                    <div class="entries-header">
+                        <div class="log-filter">
+                            <button class="filter-btn active" data-filter="all">
+                                <span class="filter-icon">📊</span> All
+                            </button>
+                            <button class="filter-btn" data-filter="faisal">
+                                <span class="filter-icon">🟢</span> Faisal
+                            </button>
+                            <button class="filter-btn" data-filter="sharique">
+                                <span class="filter-icon">🟣</span> Sharique
+                            </button>
+                            <button class="filter-btn" data-filter="maira">
+                                <span class="filter-icon">🩷</span> Maira
+                            </button>
+                        </div>
+                        <div class="entries-count">
+                            <span id="visible-count">0</span> entries
+                        </div>
+                    </div>
+                    <div id="log-entries" class="log-entries">
+                        <!-- Logs will be dynamically inserted here -->
+                    </div>
+                </div>
+            </section>
+        </div>
 
         <!-- Footer -->
         <footer class="footer">
@@ -446,7 +679,8 @@
         <div class="modal-content delete-modal">
             <div class="delete-modal-icon">⚠️</div>
             <h2 class="delete-modal-title">DELETE MISSION LOG?</h2>
-            <p class="delete-modal-text">This action cannot be undone. The log entry will be permanently removed from
+            <p class="delete-modal-text">This action cannot be undone. The log entry will be permanently removed
+                from
                 the system.</p>
             <div class="delete-modal-actions">
                 <button class="btn-cancel" onclick="closeDeleteModal()">CANCEL</button>
