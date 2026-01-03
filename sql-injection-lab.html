@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL INJECTION LAB - CODE GRی یN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --green-primary: #00ff88;
+            --green-secondary: #00cc6a;
+            --green-glow: rgba(0, 255, 136, 0.5);
+            --bg-primary: #0a0f0d;
+            --bg-secondary: #0d1a14;
+            --bg-card: #111b16;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --danger: #ff4757;
+            --success: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            background-image: radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.03) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--green-primary);
+            text-shadow: 0 0 20px var(--green-glow);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            margin-top: 5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--green-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--green-primary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .login-box {
+            background: var(--bg-primary);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .login-box h3 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+            color: var(--green-primary);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--green-primary);
+            box-shadow: 0 0 10px var(--green-glow);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--green-primary), var(--green-secondary));
+            border: none;
+            border-radius: 8px;
+            color: var(--bg-primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--green-glow);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .result.success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .result.fail {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .hint {
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid var(--green-primary);
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .hint strong {
+            color: var(--green-primary);
+        }
+
+        .query-display {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            color: #0f0;
+            margin-top: 15px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← BACK TO DASHBOARD</a>
+        <div class="header">
+            <h1 class="logo">💉 SQL INJECTION LAB</h1>
+            <p class="subtitle">PRACTICE SAFE HACKING</p>
+        </div>
+
+        <div class="card">
+            <h2>🎯 OBJECTIVE</h2>
+            <p>This is a vulnerable login form. Your mission is to bypass the authentication WITHOUT knowing the real
+                password. Use what you learned about SQL Injection to gain access.</p>
+            <div class="hint">
+                <strong>HINT:</strong> Remember the payload <code>' OR 1=1; --</code>. The system trusts your input...
+                maybe too much.
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="login-box">
+                <h3>🌊 WATER TREATMENT PORTAL</h3>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>USERNAME</label>
+                        <input type="text" id="username" placeholder="Enter username...">
+                    </div>
+                    <div class="form-group">
+                        <label>PASSWORD</label>
+                        <input type="password" id="password" placeholder="Enter password...">
+                    </div>
+                    <button type="submit" class="login-btn">LOGIN →</button>
+                </form>
+                <div id="query-display" class="query-display" style="display: none;"></div>
+                <div id="result" class="result"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📖 HOW IT WORKS</h2>
+            <p>The server builds this SQL query from your input:</p>
+            <div class="query-display">SELECT * FROM users WHERE username = '[YOUR INPUT]' AND password = '[YOUR INPUT]'
+            </div>
+            <p style="margin-top: 15px;">If you can make the query always return TRUE, you bypass the login!</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('login-form');
+        const result = document.getElementById('result');
+        const queryDisplay = document.getElementById('query-display');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Show the query being "executed"
+            const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+            queryDisplay.textContent = "EXECUTING: " + query;
+            queryDisplay.style.display = 'block';
+
+            // Check for SQL injection patterns
+            const sqliPatterns = ["' OR 1=1", "' OR '1'='1", "admin'--", "' OR ''='", "1=1"];
+            const isInjected = sqliPatterns.some(pattern => username.toLowerCase().includes(pattern.toLowerCase()) || password.toLowerCase().includes(pattern.toLowerCase()));
+
+            setTimeout(() => {
+                result.style.display = 'block';
+                if (isInjected) {
+                    result.className = 'result success';
+                    result.innerHTML = '🎉 <strong>ACCESS GRANTED!</strong><br>SQL Injection Successful! You bypassed authentication.';
+                } else if (username === 'admin' && password === 'securepassword123') {
+                    result.className = 'result success';
+                    result.innerHTML = '✅ <strong>ACCESS GRANTED!</strong><br>You used the correct credentials. But can you hack in without them?';
+                } else {
+                    result.className = 'result fail';
+                    result.innerHTML = '❌ <strong>ACCESS DENIED!</strong><br>Invalid credentials. Try using SQL Injection...';
+                }
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOG ANALYZER - CODE GRی یN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --green-primary: #00ff88;
+            --green-secondary: #00cc6a;
+            --green-glow: rgba(0, 255, 136, 0.5);
+            --bg-primary: #0a0f0d;
+            --bg-secondary: #0d1a14;
+            --bg-card: #111b16;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --danger: #ff4757;
+            --warning: #feca57;
+            --success: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--green-primary);
+            text-shadow: 0 0 20px var(--green-glow);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            margin-top: 5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--green-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--green-primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: var(--bg-primary);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--green-primary);
+            color: var(--bg-primary);
+        }
+
+        .log-container {
+            background: #000;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #111;
+        }
+
+        .log-entry:hover {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .log-time {
+            color: #666;
+        }
+
+        .log-info {
+            color: #0f0;
+        }
+
+        .log-warning {
+            color: var(--warning);
+        }
+
+        .log-alert {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .log-critical {
+            color: #ff0000;
+            font-weight: bold;
+            background: rgba(255, 0, 0, 0.1);
+            padding: 2px 5px;
+        }
+
+        .log-debug {
+            color: #888;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-primary);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+            color: var(--green-primary);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--green-primary);
+        }
+
+        .search-box button {
+            padding: 12px 25px;
+            background: var(--green-primary);
+            border: none;
+            border-radius: 5px;
+            color: var(--bg-primary);
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: var(--bg-primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .stat-item .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-item .value {
+            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .stat-item .value.green {
+            color: var(--success);
+        }
+
+        .stat-item .value.yellow {
+            color: var(--warning);
+        }
+
+        .stat-item .value.red {
+            color: var(--danger);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← BACK TO DASHBOARD</a>
+        <div class="header">
+            <h1 class="logo">🔍 LOG ANALYZER</h1>
+            <p class="subtitle">HUNT FOR THREATS IN SERVER LOGS</p>
+        </div>
+
+        <div class="card">
+            <h2>📊 THREAT SUMMARY</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="label">TOTAL ENTRIES</div>
+                    <div class="value green" id="stat-total">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">WARNINGS</div>
+                    <div class="value yellow" id="stat-warning">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">ALERTS</div>
+                    <div class="value red" id="stat-alert">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">CRITICAL</div>
+                    <div class="value red" id="stat-critical">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔎 SEARCH & FILTER</h2>
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Search logs (e.g., 'SQL', '192.168', 'admin')...">
+                <button onclick="filterLogs()">SEARCH</button>
+            </div>
+            <div class="filters">
+                <button class="filter-btn active" onclick="setFilter('all', this)">ALL</button>
+                <button class="filter-btn" onclick="setFilter('INFO', this)">INFO</button>
+                <button class="filter-btn" onclick="setFilter('WARNING', this)">WARNING</button>
+                <button class="filter-btn" onclick="setFilter('ALERT', this)">ALERT</button>
+                <button class="filter-btn" onclick="setFilter('CRITICAL', this)">CRITICAL</button>
+                <button class="filter-btn" onclick="setFilter('DEBUG', this)">DEBUG</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📜 SERVER LOGS</h2>
+            <div class="log-container" id="log-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const logData = [
+            { time: "08:00:00", type: "SYSTEM", msg: "Substation initialized." },
+            { time: "08:05:12", type: "INFO", msg: "Sensor [WATER_TEMP]: 22.4°C - Status: NORMAL" },
+            { time: "08:10:45", type: "INFO", msg: "Sensor [PH_LEVEL]: 7.2 - Status: NORMAL" },
+            { time: "09:12:04", type: "INFO", msg: "System heartbeat normal." },
+            { time: "09:15:33", type: "INFO", msg: "Connection established from internal terminal 192.168.1.12 (Manager_PC)." },
+            { time: "09:15:45", type: "INFO", msg: "User 'Admin' logged in from 192.168.1.12." },
+            { time: "09:16:30", type: "DEBUG", msg: "Manager_PC encrypted handshake: RVhFQ1VURSBERUZFTlNFIFBST1RPQ09M" },
+            { time: "09:20:11", type: "WARNING", msg: "Multiple failed login attempts on DAM_CONTROL_V4." },
+            { time: "09:20:12", type: "WARNING", msg: "Source IP: 45.33.22.11 [EXTERNAL - SYNDICATE_KNOWN_HOST]." },
+            { time: "09:21:00", type: "ALERT", msg: "FIREWALL: Blocked 500+ requests from 45.33.22.11. IP Blacklisted." },
+            { time: "10:00:00", type: "SYSTEM", msg: "Scheduled background scan complete. 0 threats found." },
+            { time: "10:15:10", type: "INFO", msg: "New message intercepted on internal chat server: \"Pbqr Terra vf gur sghre\" (Encrypted with ROT13)." },
+            { time: "10:45:12", type: "INFO", msg: "Connection established from 192.168.1.50 [INTERNAL - BREAK_ROOM_WIFI]." },
+            { time: "10:45:15", type: "DEBUG", msg: "SESSION_ID: SYND-8829-XP" },
+            { time: "10:45:20", type: "DEBUG", msg: "SQL_QUERY: SELECT * FROM users WHERE username = 'admin' AND password = '' OR 1=1--';" },
+            { time: "10:45:21", type: "ALERT", msg: "AUTHENTICATION BYPASS DETECTED. User 'admin' session started via SQL Injection." },
+            { time: "10:45:21", type: "INFO", msg: "SOURCE_IP: 192.168.1.50" },
+            { time: "10:45:25", type: "INFO", msg: "User 'admin' accessing sensitive directory: /secret/dam_valves/" },
+            { time: "10:45:30", type: "CRITICAL", msg: "VALVES OPENED. Water pressure dropping in Sector 7. Warning: FLOOD HAZARD." },
+            { time: "10:45:40", type: "INFO", msg: "Uploading file to external server: 'leak_report.pdf' -> 45.33.22.11" },
+            { time: "10:45:45", type: "INFO", msg: "Log entry deleted by user 'admin'. (Manual log scrubbing detected!)" },
+            { time: "10:45:50", type: "INFO", msg: "User 'admin' logged out." },
+            { time: "10:45:55", type: "DEBUG", msg: "Final outgoing packet: [S0NLU0VPTkU9QUNDRVBURUQ=]" },
+            { time: "10:46:00", type: "ALERT", msg: "SYSTEM CORRUPTION DETECTED. Malware hash found: e99a18c428cb38d5f260853678922e03" },
+            { time: "10:46:05", type: "ALERT", msg: "System overheating in Control Hub. Fans at 100% capacity." },
+            { time: "11:00:00", type: "SYSTEM", msg: "Emergency Lockdown initiated. Auto-rebooting to safe mode..." }
+        ];
+
+        let currentFilter = 'all';
+
+        function renderLogs(filter = 'all', search = '') {
+            const container = document.getElementById('log-container');
+            container.innerHTML = '';
+
+            let filtered = logData;
+            if (filter !== 'all') {
+                filtered = filtered.filter(l => l.type === filter);
+            }
+            if (search) {
+                filtered = filtered.filter(l => l.msg.toLowerCase().includes(search.toLowerCase()) || l.time.includes(search));
+            }
+
+            filtered.forEach(log => {
+                const div = document.createElement('div');
+                div.className = 'log-entry';
+                let typeClass = 'log-info';
+                if (log.type === 'WARNING') typeClass = 'log-warning';
+                if (log.type === 'ALERT') typeClass = 'log-alert';
+                if (log.type === 'CRITICAL') typeClass = 'log-critical';
+                if (log.type === 'DEBUG') typeClass = 'log-debug';
+
+                div.innerHTML = `<span class="log-time">${log.time}</span> <span class="${typeClass}">[${log.type}]</span> ${log.msg}`;
+                container.appendChild(div);
+            });
+
+            // Update stats
+            document.getElementById('stat-total').textContent = logData.length;
+            document.getElementById('stat-warning').textContent = logData.filter(l => l.type === 'WARNING').length;
+            document.getElementById('stat-alert').textContent = logData.filter(l => l.type === 'ALERT').length;
+            document.getElementById('stat-critical').textContent = logData.filter(l => l.type === 'CRITICAL').length;
+        }
+
+        function setFilter(type, btn) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterLogs();
+        }
+
+        function filterLogs() {
+            const search = document.getElementById('search').value;
+            renderLogs(currentFilter, search);
+        }
+
+        renderLogs();
+    </script>
+</body>
+
+</html>

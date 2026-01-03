@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHISHING SIMULATOR - CODE GRی یN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --green-primary: #00ff88;
+            --green-secondary: #00cc6a;
+            --green-glow: rgba(0, 255, 136, 0.5);
+            --bg-primary: #0a0f0d;
+            --bg-secondary: #0d1a14;
+            --bg-card: #111b16;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --danger: #ff4757;
+            --warning: #feca57;
+            --success: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 30px;
+            background-image: radial-gradient(circle at 80% 20%, rgba(0, 255, 136, 0.03) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--green-primary);
+            text-shadow: 0 0 20px var(--green-glow);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            margin-top: 5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--green-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--green-primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-item {
+            background: var(--bg-primary);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .score-item .label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .score-item .value {
+            font-size: 1.8rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--green-primary);
+        }
+
+        .email-card {
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .email-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .email-from {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .email-subject {
+            font-size: 1.2rem;
+            margin-top: 5px;
+        }
+
+        .email-body {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .email-body a {
+            color: #0066cc;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .email-body .urgent {
+            color: #cc0000;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-legit {
+            background: var(--success);
+            color: var(--bg-primary);
+        }
+
+        .btn-phish {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--success);
+        }
+
+        .feedback.wrong {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid var(--danger);
+        }
+
+        .feedback h3 {
+            margin-bottom: 10px;
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--green-primary), var(--green-secondary));
+            border: none;
+            border-radius: 8px;
+            color: var(--bg-primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .game-over h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← BACK TO DASHBOARD</a>
+        <div class="header">
+            <h1 class="logo">🎣 PHISHING SIMULATOR</h1>
+            <p class="subtitle">CAN YOU SPOT THE FAKE?</p>
+        </div>
+
+        <div class="score-board">
+            <div class="score-item">
+                <div class="label">CORRECT</div>
+                <div class="value" id="correct">0</div>
+            </div>
+            <div class="score-item">
+                <div class="label">WRONG</div>
+                <div class="value" id="wrong" style="color: var(--danger);">0</div>
+            </div>
+            <div class="score-item">
+                <div class="label">EMAIL</div>
+                <div class="value" id="current">1</div>
+            </div>
+        </div>
+
+        <div id="email-container"></div>
+        <div id="game-over" class="card game-over" style="display: none;">
+            <h2>🏆 TRAINING COMPLETE!</h2>
+            <p id="final-score"></p>
+            <button class="next-btn" style="display: block;" onclick="location.reload()">RESTART TRAINING</button>
+        </div>
+    </div>
+
+    <script>
+        const emails = [
+            {
+                from: "security@paypa1.com",
+                subject: "⚠️ Your account has been limited!",
+                body: `<p class="urgent">URGENT: We've detected unusual activity on your PayPal account.</p><p>Your account access has been limited until you verify your information. Click the link below within 24 hours or your account will be permanently suspended.</p><p><a href="#">Click here to verify your account →</a></p><p>PayPal Security Team</p>`,
+                isPhish: true,
+                clues: ["The sender domain is 'paypa1.com' (with a '1' instead of 'l')", "Creates urgency with threats of suspension", "Uses generic greeting instead of your name"]
+            },
+            {
+                from: "noreply@github.com",
+                subject: "Your GitHub security key",
+                body: `<p>Hi Agent,</p><p>You recently requested a security key for your GitHub account. Here is your one-time code: <strong>482910</strong></p><p>This code will expire in 10 minutes. If you didn't request this, you can safely ignore this email.</p><p>Thanks,<br>The GitHub Team</p>`,
+                isPhish: false,
+                clues: ["Legitimate domain 'github.com'", "Doesn't ask you to click any suspicious links", "Provides an option to ignore if not requested"]
+            },
+            {
+                from: "admin@iba-campus.edu.pk",
+                subject: "Password Reset Required - Immediate Action",
+                body: `<p class="urgent">Dear Student,</p><p>Due to a security breach, all students must reset their passwords immediately. Click the button below to reset your password now.</p><p><a href="#">RESET PASSWORD NOW</a></p><p>Failure to comply within 1 hour will result in account suspension.</p><p>IT Department</p>`,
+                isPhish: true,
+                clues: ["Creates extreme urgency (1 hour deadline)", "Generic 'Dear Student' instead of your actual name", "Threatens account suspension to pressure you"]
+            },
+            {
+                from: "no-reply@amazon.com",
+                subject: "Your order #112-4829381-2938471 has shipped",
+                body: `<p>Hello,</p><p>Your package is on its way! Track your shipment using the link in your Amazon account.</p><p><strong>Estimated delivery:</strong> January 5, 2026</p><p>Thank you for shopping with Amazon.</p>`,
+                isPhish: false,
+                clues: ["Official Amazon domain", "Doesn't ask for any personal information", "Refers to a specific order number"]
+            },
+            {
+                from: "hr@code-grreen.org",
+                subject: "You've won a $500 Gift Card! 🎁",
+                body: `<p>Congratulations!</p><p>You've been selected as the winner of our monthly employee appreciation raffle! You've won a $500 Amazon Gift Card!</p><p>To claim your prize, please reply with your full name, address, and bank account details for direct deposit.</p><p>HR Team</p>`,
+                isPhish: true,
+                clues: ["Misspelled domain 'code-grreen.org' (double 'r')", "Asks for bank account details", "Too good to be true prize notification"]
+            }
+        ];
+
+        let currentIndex = 0;
+        let correct = 0;
+        let wrong = 0;
+
+        function showEmail(index) {
+            if (index >= emails.length) {
+                document.getElementById('email-container').style.display = 'none';
+                document.getElementById('game-over').style.display = 'block';
+                document.getElementById('final-score').innerHTML = `You correctly identified <strong style="color: var(--green-primary);">${correct}</strong> out of <strong>${emails.length}</strong> emails!<br><br>${correct === emails.length ? '🏆 PERFECT SCORE! You are a Phishing Expert!' : correct >= 3 ? '👍 Good job! Keep practicing!' : '⚠️ You need more training, Agent!'}`;
+                return;
+            }
+
+            const email = emails[index];
+            document.getElementById('current').textContent = index + 1;
+            document.getElementById('email-container').innerHTML = `
+                <div class="card">
+                    <div class="email-card">
+                        <div class="email-header">
+                            <div class="email-from">From: ${email.from}</div>
+                            <div class="email-subject">${email.subject}</div>
+                        </div>
+                        <div class="email-body">${email.body}</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-legit" onclick="checkAnswer(false)">✅ LEGITIMATE</button>
+                        <button class="btn btn-phish" onclick="checkAnswer(true)">🎣 PHISHING</button>
+                    </div>
+                    <div id="feedback" class="feedback"></div>
+                    <button id="next-btn" class="next-btn" onclick="nextEmail()">NEXT EMAIL →</button>
+                </div>
+            `;
+        }
+
+        function checkAnswer(guessedPhish) {
+            const email = emails[currentIndex];
+            const feedback = document.getElementById('feedback');
+            const nextBtn = document.getElementById('next-btn');
+            const isCorrect = guessedPhish === email.isPhish;
+
+            if (isCorrect) {
+                correct++;
+                document.getElementById('correct').textContent = correct;
+                feedback.className = 'feedback correct';
+                feedback.innerHTML = `<h3 style="color: var(--success);">✅ CORRECT!</h3><p>${email.isPhish ? 'This was indeed a phishing email!' : 'This was a legitimate email.'}</p><p><strong>Clues:</strong><br>• ${email.clues.join('<br>• ')}</p>`;
+            } else {
+                wrong++;
+                document.getElementById('wrong').textContent = wrong;
+                feedback.className = 'feedback wrong';
+                feedback.innerHTML = `<h3 style="color: var(--danger);">❌ INCORRECT!</h3><p>${email.isPhish ? 'This was actually a PHISHING email!' : 'This was actually a legitimate email.'}</p><p><strong>Clues you missed:</strong><br>• ${email.clues.join('<br>• ')}</p>`;
+            }
+
+            feedback.style.display = 'block';
+            nextBtn.style.display = 'block';
+            document.querySelectorAll('.btn-group .btn').forEach(btn => btn.disabled = true);
+        }
+
+        function nextEmail() {
+            currentIndex++;
+            showEmail(currentIndex);
+        }
+
+        showEmail(0);
+    </script>
+</body>
+
+</html>
