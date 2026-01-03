@@ -1,34 +1,24 @@
-/agent_id_generation_guide.md
-/agent_id_generation_guide.pdf
-/archive
-/complete_schedule_jan2026.md
-/complete_schedule_jan2026.pdf
-/day1_creative_lab.md
-/day1_creative_lab.pdf
-/day1_logistics_and_templates.md
-/day1_logistics_and_templates.pdf
-/day1_ppt_generation_guide.md
-/day1_ppt_generation_guide.pdf
-/day5_mission_cards.md
-/day5_mission_cards.pdf
-/environmental_theme.md
-/environmental_theme.pdf
-/free_cyber_lab_guide.md
-/free_cyber_lab_guide.pdf
-/groups_and_projects.md
-/groups_and_projects.pdf
-/iba_campus_mission_map.md
-/iba_campus_mission_map.pdf
-/instructor_lab_guide.md
-/instructor_lab_guide.pdf
-/master_website_prompt.md
-/master_website_prompt.pdf
-/QR codes
-/qr_hunt_code_green.md
-/qr_hunt_code_green.pdf
-/secret_directors_script.md
-/secret_directors_script.pdf
-/video_production_guide.md
-/video_production_guide.pdf
-/website_maker_apps.md
-/website_maker_apps.pdf
+# CODE GRی یN - Whitelist Configuration
+
+# Ignore everything in the root
+/*
+
+# Explicitly allow web application files in the root
+!/index.html
+!/styles.css
+!/script.js
+!/password-cracker.html
+!/sql-injection-lab.html
+!/phishing-simulator.html
+!/log-analyzer.html
+!/.gitignore
+
+# Allow the avatars folder
+!/avatars/
+
+# Ignore all markdown files everywhere in the tracked paths
+*.md
+
+# Ensure all hidden folder contents are ignored
+*/
+!/avatars/**
