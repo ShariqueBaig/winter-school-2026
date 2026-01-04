@@ -9,16 +9,18 @@
 !/script.js
 !/password-cracker.html
 !/sql-injection-lab.html
+!/bank-of-shadow.html
 !/phishing-simulator.html
 !/log-analyzer.html
 !/.gitignore
 
 # Allow the avatars folder
 !/avatars/
-
-# Ignore all markdown files everywhere in the tracked paths
-*.md
-
-# Ensure all hidden folder contents are ignored
-*/
 !/avatars/**
+
+# Allow Day 4 materials
+!/day4/
+!/day4/**
+
+# Ignore all markdown files
+**/*.md
