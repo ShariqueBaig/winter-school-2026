@@ -1854,9 +1854,97 @@ function initCountdownTimer() {
 }
 
 // ================================
+// AGENT MANAGER & LEADERBOARD
+// ================================
+const AgentManager = {
+    agents: [
+        { id: 'AERIS', name: 'Aeris', division: 'atmos', catchphrase: 'Clean Code. Clear Skies.', xp: 1250, avatar: '☁️' },
+        { id: 'CIPHER', name: 'Cipher', division: 'volt', catchphrase: 'Decrypting the impossible. Redefining reality.', xp: 1180, avatar: '🔐' },
+        { id: 'WASIL', name: 'Wasil', division: 'volt', catchphrase: 'saving the world one bug at a time', xp: 1100, avatar: '🐞' },
+        { id: 'WOHN_JICK', name: 'Wohn Jick', division: 'atmos', catchphrase: 'Cracking (the code) it step by step', xp: 1050, avatar: '👞' },
+        { id: 'FROST', name: 'Frost', division: 'volt', catchphrase: 'Think before you lose the data', xp: 980, avatar: '❄️' },
+        { id: 'NEXUS', name: 'Nexus', division: 'atmos', catchphrase: 'Connecting the dots across the grid. The circuit never ends.', xp: 920, avatar: '🛰️' }
+    ],
+
+    init() {
+        this.renderAgents();
+        this.renderLeaderboard();
+    },
+
+    renderAgents() {
+        const grid = document.querySelector('.agents-grid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+        this.agents.forEach(agent => {
+            const card = document.createElement('div');
+            card.className = 'agent-card';
+            card.setAttribute('data-division', agent.division);
+
+            card.innerHTML = `
+                <div class="agent-card-header">
+                    <span class="agent-division-badge ${agent.division}">${agent.division.toUpperCase()}</span>
+                    <span class="agent-status online">● ONLINE</span>
+                </div>
+                <div class="agent-avatar">${agent.avatar}</div>
+                <h3 class="agent-codename">${agent.id}</h3>
+                <p class="agent-tagline">"${agent.catchphrase}"</p>
+                <div class="agent-meta">
+                    <span class="agent-xp-display">${agent.xp} XP</span>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // Re-init tilt effect for new cards
+        if (typeof init3DTilt === 'function') init3DTilt();
+    },
+
+    renderLeaderboard() {
+        const containers = [
+            document.getElementById('leaderboard-container'),
+            document.getElementById('full-leaderboard-container')
+        ];
+
+        // Sort by XP descending
+        const sortedAgents = [...this.agents].sort((a, b) => b.xp - a.xp);
+
+        containers.forEach(container => {
+            if (!container) return;
+
+            const isFull = container.id === 'full-leaderboard-container';
+
+            container.innerHTML = `
+                <div class="leaderboard-card ${isFull ? 'full-view' : ''}">
+                    <div class="leaderboard-header">
+                        <h3>🏆 ${isFull ? 'GLOBAL OPERATIVE RANKINGS' : 'MISSION LEADERBOARD'}</h3>
+                    </div>
+                    <div class="leaderboard-list">
+                        ${sortedAgents.map((agent, index) => `
+                            <div class="leaderboard-item ${index < 3 ? 'top-tier' : ''}">
+                                <div class="rank">#${index + 1}</div>
+                                <div class="rank-avatar">${agent.avatar}</div>
+                                <div class="rank-info">
+                                    <div class="rank-name">${agent.name}</div>
+                                    <div class="rank-division">${agent.division.toUpperCase()}</div>
+                                </div>
+                                <div class="rank-xp">${agent.xp} XP</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+    }
+};
+
+// ================================
 // INITIALIZE ALL INTERACTIVE FEATURES
 // ================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Agents
+    AgentManager.init();
+
     // Delay to ensure main content loads first
     setTimeout(() => {
         init3DTilt();

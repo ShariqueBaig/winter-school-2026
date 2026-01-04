@@ -13,6 +13,91 @@
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Dynamic Agent Card Enhancements */
+        .agent-card {
+            background: rgba(17, 25, 22, 0.9);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .agent-avatar {
+            font-size: 3rem;
+            margin: 15px 0;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.3));
+        }
+
+        /* Leaderboard Styling */
+        .leaderboard-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .leaderboard-header h3 {
+            font-family: var(--font-display);
+            color: #00ff88;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .leaderboard-item {
+            display: grid;
+            grid-template-columns: 40px 50px 1fr 100px;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s ease;
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .leaderboard-item.top-tier {
+            border-left: 3px solid #00ff88;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: var(--text-secondary);
+        }
+
+        .rank-avatar {
+            font-size: 1.5rem;
+        }
+
+        .rank-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .rank-division {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .rank-xp {
+            color: #00ff88;
+            font-weight: 700;
+            text-align: right;
+        }
+    </style>
 </head>
 
 <body>
@@ -188,58 +273,9 @@
                 </div>
 
                 <!-- Agent Leaderboard -->
-                <div class="leaderboard-panel">
-                    <div class="leaderboard-header">
-                        <span class="leaderboard-icon">🏆</span>
-                        <span class="leaderboard-title">AGENT LEADERBOARD</span>
-                    </div>
-                    <div class="leaderboard-body">
-                        <div class="agent-row rank-1">
-                            <span class="agent-rank">🥇</span>
-                            <span class="agent-name">Agent Alpha</span>
-                            <span class="agent-xp">1250 XP</span>
-                        </div>
-                        <div class="agent-row rank-2">
-                            <span class="agent-rank">🥈</span>
-                            <span class="agent-name">Agent Bravo</span>
-                            <span class="agent-xp">1180 XP</span>
-                        </div>
-                        <div class="agent-row rank-3">
-                            <span class="agent-rank">🥉</span>
-                            <span class="agent-name">Agent Charlie</span>
-                            <span class="agent-xp">1050 XP</span>
-                        </div>
-                        <div class="agent-row">
-                            <span class="agent-rank">4</span>
-                            <span class="agent-name">Agent Delta</span>
-                            <span class="agent-xp">980 XP</span>
-                        </div>
-                        <div class="agent-row">
-                            <span class="agent-rank">5</span>
-                            <span class="agent-name">Agent Echo</span>
-                            <span class="agent-xp">920 XP</span>
-                        </div>
-                        <div class="agent-row">
-                            <span class="agent-rank">6</span>
-                            <span class="agent-name">Agent Foxtrot</span>
-                            <span class="agent-xp">850 XP</span>
-                        </div>
-                        <div class="agent-row">
-                            <span class="agent-rank">7</span>
-                            <span class="agent-name">Agent Golf</span>
-                            <span class="agent-xp">780 XP</span>
-                        </div>
-                        <div class="agent-row">
-                            <span class="agent-rank">8</span>
-                            <span class="agent-name">Agent Hotel</span>
-                            <span class="agent-xp">720 XP</span>
-                        </div>
-                        <div class="agent-row">
-                            <span class="agent-rank">9</span>
-                            <span class="agent-name">Agent India</span>
-                            <span class="agent-xp">650 XP</span>
-                        </div>
-                    </div>
+                <div id="leaderboard-container" class="leaderboard-panel">
+                    <!-- Dynamic Leaderboard injected by AgentManager -->
+                    <div class="leaderboard-loading">Initializing Operative Rankings...</div>
                 </div>
             </section>
 
@@ -435,134 +471,17 @@
                 <h2 class="section-title">
                     <span class="title-icon">🎖️</span>
                     AGENT ROSTER
-                    <span class="agent-count-badge">9 ACTIVE</span>
+                    <span class="agent-count-badge">6 ACTIVE</span>
                 </h2>
+
+                <!-- Main Agents Grid -->
                 <div class="agents-grid">
-                    <!-- Agent 1 -->
-                    <div class="agent-card" data-division="aqua">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge aqua">AQUA</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">🦈</div>
-                        <h3 class="agent-codename">SHARK</h3>
-                        <p class="agent-tagline">"Silent but deadly"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">1250 XP</span>
-                        </div>
-                    </div>
+                    <!-- Dynamic Agents injected by AgentManager -->
+                </div>
 
-                    <!-- Agent 2 -->
-                    <div class="agent-card" data-division="volt">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge volt">VOLT</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">⚡</div>
-                        <h3 class="agent-codename">THUNDER</h3>
-                        <p class="agent-tagline">"Speed is power"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">1180 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Agent 3 -->
-                    <div class="agent-card" data-division="terra">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge terra">TERRA</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">🌿</div>
-                        <h3 class="agent-codename">ROOT</h3>
-                        <p class="agent-tagline">"Grounded in truth"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">1050 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Agent 4 -->
-                    <div class="agent-card" data-division="atmos">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge atmos">ATMOS</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">🌪️</div>
-                        <h3 class="agent-codename">CYCLONE</h3>
-                        <p class="agent-tagline">"Chaos in motion"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">980 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Agent 5 -->
-                    <div class="agent-card" data-division="aqua">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge aqua">AQUA</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">🐙</div>
-                        <h3 class="agent-codename">KRAKEN</h3>
-                        <p class="agent-tagline">"Depths of knowledge"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">920 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Agent 6 -->
-                    <div class="agent-card" data-division="volt">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge volt">VOLT</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">💥</div>
-                        <h3 class="agent-codename">SPARK</h3>
-                        <p class="agent-tagline">"Igniting innovation"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">850 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Agent 7 -->
-                    <div class="agent-card" data-division="terra">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge terra">TERRA</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">🏔️</div>
-                        <h3 class="agent-codename">SUMMIT</h3>
-                        <p class="agent-tagline">"Reaching new heights"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">780 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Agent 8 -->
-                    <div class="agent-card" data-division="atmos">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge atmos">ATMOS</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">🌙</div>
-                        <h3 class="agent-codename">ECLIPSE</h3>
-                        <p class="agent-tagline">"Shadow operations"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">720 XP</span>
-                        </div>
-                    </div>
-
-                    <!-- Agent 9 -->
-                    <div class="agent-card" data-division="aqua">
-                        <div class="agent-card-header">
-                            <span class="agent-division-badge aqua">AQUA</span>
-                            <span class="agent-status online">● ONLINE</span>
-                        </div>
-                        <div class="agent-avatar">🌊</div>
-                        <h3 class="agent-codename">WAVE</h3>
-                        <p class="agent-tagline">"Riding the signal"</p>
-                        <div class="agent-meta">
-                            <span class="agent-xp-display">650 XP</span>
-                        </div>
-                    </div>
+                <!-- Global Operative Rankings -->
+                <div id="full-leaderboard-container">
+                    <!-- Dynamic rankings injected here -->
                 </div>
             </section>
         </div>
@@ -691,6 +610,14 @@
                         <h3 class="tool-name">PASSWORD ANALYZER</h3>
                         <p class="tool-desc">Test password strength and see how fast it can be cracked</p>
                         <span class="tool-btn">LAUNCH TOOL →</span>
+                    </a>
+
+                    <!-- Bank of Shadow (Training Dummy) -->
+                    <a href="bank-of-shadow.html" class="tool-card">
+                        <div class="tool-icon">🏦</div>
+                        <h3 class="tool-name">BANK OF SHADOW</h3>
+                        <p class="tool-desc">Vulnerable banking portal for XSS & SQLi</p>
+                        <span class="tool-btn">LAUNCH SIMULATION →</span>
                     </a>
 
                     <!-- SQL Injection Lab -->
