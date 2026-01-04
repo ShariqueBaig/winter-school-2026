@@ -1863,7 +1863,10 @@ const AgentManager = {
         { id: 'WASIL', name: 'Wasil', division: 'volt', catchphrase: 'saving the world one bug at a time', xp: 1100, avatar: '🐞' },
         { id: 'WOHN_JICK', name: 'Wohn Jick', division: 'atmos', catchphrase: 'Cracking (the code) it step by step', xp: 1050, avatar: '👞' },
         { id: 'FROST', name: 'Frost', division: 'volt', catchphrase: 'Think before you lose the data', xp: 980, avatar: '❄️' },
-        { id: 'NEXUS', name: 'Nexus', division: 'atmos', catchphrase: 'Connecting the dots across the grid. The circuit never ends.', xp: 920, avatar: '🛰️' }
+        { id: 'NEXUS', name: 'Nexus', division: 'atmos', catchphrase: 'Connecting the dots across the grid. The circuit never ends.', xp: 920, avatar: '🛰️' },
+        { id: 'PHANTOM', name: 'Phantom', division: 'aqua', catchphrase: 'Seen only when it is too late.', xp: 1400, avatar: '👻' },
+        { id: 'INVIS', name: 'Invis', division: 'aqua', catchphrase: 'Hidden in plain sight.', xp: 1350, avatar: '👤' },
+        { id: 'UNKNOWN_LEGEND', name: 'Unknown Legend', division: 'aqua', catchphrase: 'The ghost in the machine.', xp: 1500, avatar: '🔱' }
     ],
 
     init() {
@@ -1881,12 +1884,26 @@ const AgentManager = {
             card.className = 'agent-card';
             card.setAttribute('data-division', agent.division);
 
+            // Dynamic Avatar Resolution
+            let imgPath = '';
+            if (agent.id === 'UNKNOWN_LEGEND') {
+                imgPath = `avatars/UNKNOWNLEGEND.png`;
+            } else if (['PHANTOM', 'INVIS', 'NEXUS'].includes(agent.id)) {
+                imgPath = `avatars/${agent.id}.png`;
+            } else {
+                const fileName = agent.id.replace('_', ' ');
+                imgPath = `avatars/${fileName}.jpeg`;
+            }
+
             card.innerHTML = `
                 <div class="agent-card-header">
                     <span class="agent-division-badge ${agent.division}">${agent.division.toUpperCase()}</span>
                     <span class="agent-status online">● ONLINE</span>
                 </div>
-                <div class="agent-avatar">${agent.avatar}</div>
+                <div class="agent-avatar-container">
+                    <img src="${imgPath}" class="agent-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="agent-avatar-fallback" style="display:none;">${agent.avatar}</div>
+                </div>
                 <h3 class="agent-codename">${agent.id}</h3>
                 <p class="agent-tagline">"${agent.catchphrase}"</p>
                 <div class="agent-meta">
@@ -1920,17 +1937,31 @@ const AgentManager = {
                         <h3>🏆 ${isFull ? 'GLOBAL OPERATIVE RANKINGS' : 'MISSION LEADERBOARD'}</h3>
                     </div>
                     <div class="leaderboard-list">
-                        ${sortedAgents.map((agent, index) => `
-                            <div class="leaderboard-item ${index < 3 ? 'top-tier' : ''}">
-                                <div class="rank">#${index + 1}</div>
-                                <div class="rank-avatar">${agent.avatar}</div>
-                                <div class="rank-info">
-                                    <div class="rank-name">${agent.name}</div>
-                                    <div class="rank-division">${agent.division.toUpperCase()}</div>
+                        ${sortedAgents.map((agent, index) => {
+                let imgPath = '';
+                if (agent.id === 'UNKNOWN_LEGEND') {
+                    imgPath = `avatars/UNKNOWNLEGEND.png`;
+                } else if (['PHANTOM', 'INVIS', 'NEXUS'].includes(agent.id)) {
+                    imgPath = `avatars/${agent.id}.png`;
+                } else {
+                    const fileName = agent.id.replace('_', ' ');
+                    imgPath = `avatars/${fileName}.jpeg`;
+                }
+                return `
+                                <div class="leaderboard-item ${index < 3 ? 'top-tier' : ''}">
+                                    <div class="rank">#${index + 1}</div>
+                                    <div class="rank-avatar-container">
+                                        <img src="${imgPath}" class="rank-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                        <div class="rank-avatar-fallback" style="display:none;">${agent.avatar}</div>
+                                    </div>
+                                    <div class="rank-info">
+                                        <div class="rank-name">${agent.name}</div>
+                                        <div class="rank-division">${agent.division.toUpperCase()}</div>
+                                    </div>
+                                    <div class="rank-xp">${agent.xp} XP</div>
                                 </div>
-                                <div class="rank-xp">${agent.xp} XP</div>
-                            </div>
-                        `).join('')}
+                            `;
+            }).join('')}
                     </div>
                 </div>
             `;
